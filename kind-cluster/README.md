@@ -16,3 +16,14 @@
 
 ## kubeconfig.yaml 存储到secret
 `kubectl --kubeconfig ./dev-k8s.yaml create secret generic remote-cls --from-file=remote-cls=./remote-internal-k8s.yaml`
+
+## debug pod
+修改pod 启动命令
+```go
+containers:
+  - name: ubuntu
+    image: ubuntu:latest
+    # Just spin & wait forever
+    command: [ "/bin/bash", "-c", "--" ]
+    args: [ "while true; do sleep 30; done;" ]
+```
