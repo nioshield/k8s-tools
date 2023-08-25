@@ -13,12 +13,15 @@
 * 修改kubeconfig 的ip 为kind node  的ip,端口修改为6443
 * `docker cp ./remote-k8s.yaml dev-cls-control-plane:/remote-k8s.yaml`
 
+## 镜像导入
+* kind load docker-image -n {cluster name} {images}
+
 
 ## kubeconfig.yaml 存储到secret
 `kubectl --kubeconfig ./dev-k8s.yaml create secret generic remote-cls --from-file=remote-cls=./remote-internal-k8s.yaml`
 
 ## debug pod
-修改pod 启动命令
+修改deploy 启动命令,可以直接通过command/args 两个参数替换,注意请求容器中是否有/bin/bash
 ```go
 containers:
   - name: ubuntu
