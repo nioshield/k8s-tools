@@ -5,13 +5,13 @@
 
 ## init cluster
 初始化cluster 通过kind 完成
-`kind create cluster --name {cluster name }--config ./remote-cls.yaml`
+`kind create cluster --name {cluster name } --config ./remote-cls.yaml`
 
 ## cluster 互相访问
 * 默认kind 创建的node ip 是自增的，网络内部可以互通
 * kubeconfig 文件获取获取的是`127.0.0.1` 地址上的，同时docker映射的宿主机的端口
 * 修改kubeconfig 的ip 为kind node  的ip,端口修改为6443
-* `docker cp ./remote-k8s.yaml dev-cls-control-plane:/remote-k8s.yaml`
+* `docker cp ./remote-internal-k8s.yaml dev-cls-control-plane:/remote-k8s.yaml`
 
 ## 镜像导入
 * kind load docker-image -n {cluster name} {images}
@@ -27,6 +27,6 @@ containers:
   - name: ubuntu
     image: ubuntu:latest
     # Just spin & wait forever
-    command: [ "/bin/bash", "-c", "--" ]
+    command: [ "/bin/sh", "-c", "--" ]
     args: [ "while true; do sleep 30; done;" ]
 ```
