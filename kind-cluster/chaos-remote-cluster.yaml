@@ -4,7 +4,7 @@ metadata:
  name: remote-cls
 spec:
  namespace: "chaos-mesh"
- version: "2.5.0"
+ version: "2.6.2"
  configOverride:
    dashboard:
       create: false
@@ -12,6 +12,6 @@ spec:
       replicaCount: 1
  kubeConfig:
    secretRef:
-      name: remote-cls
+      name: dev-cls-remote
       namespace: default
-      key: remote-cls
+      key: dev-cls-remote
