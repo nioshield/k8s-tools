@@ -106,6 +106,13 @@ remote(){
    apply_remote_k8sconf $currentClsName $clusterName
 }
 
+destory_remote(){
+    destory
+
+    clusterName="${clusterName}-remote"
+    destory
+}
+
 apply_remote_k8sconf(){
   if [[ $# -lt 2 ]];then
       log_error "apply remote k8s config params num err"
@@ -229,7 +236,10 @@ case $action in
     remote
     exit 0
     ;;
-
+    destory_remote)
+    destory_remote
+    exit 0
+    ;;
     *)
     log_error "unknown action: $action"
     usage
