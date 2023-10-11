@@ -19,6 +19,7 @@ Options:
        -iv,--imageVersion      version of the Load docker-images, default value: v2.6.2
        -in,--imageNames        name of the Load docker-images, use "," interval, default value: chaos-mesh,chaos-daemon
        -ir,--imageRegister     register of the Load docker-images, default value: ghcr.io/chaos-mesh
+       -la,--loadAllNodes      load docker-image to all nodes include controller node
 Actions:
       create                  create Kubernetes cluster
       destory                 delete Kubernetes cluster
@@ -83,10 +84,17 @@ destory() {
 load(){
     log_info "############# start load image cluster:[${clusterName}] #############"
     names=(${imageNames//,/ })
+    nodeList=`kubectl get nodes -o go-template --template='{{range.items}}{{printf "%s\n" .metadata.name}}{{end}}' | grep -v "control-plane" | tr '\n' ','`
+    nodeList=${nodeList%,*}
+    loadCmd="--nodes ${nodeList}" 
+    if [ "$loadAllNodes" == "true" ]; then
+      loadCmd=""
+    fi
+    log_info "get work node names[[${nodeList}]]"
     for name in ${names[@]}
     do
         imagePath="${imageRegister}/${name}:${imageVersion}"
-        kind load docker-image -n ${clusterName} ${imagePath} & > /dev/null && echo "load image:[${imagePath}]" &
+        kind load docker-image -n ${clusterName} ${loadCmd} ${imagePath} & > /dev/null && echo "load image:[${imagePath}]" &
     done
     wait
     log_info "load image success"
@@ -139,6 +147,7 @@ info(){
   log_info "imageVersion: ${imageVersion}"
   log_info "imageNames: ${imageNames}"
   log_info "imageRegister=${imageRegister}"
+  log_info "loadAllNodes=${loadAllNodes}"
 }
 
 log_info(){
@@ -198,6 +207,11 @@ case $key in
     shift
     shift
     ;;
+    -la|--loadAllNodes)
+    loadAllNodes="$2"
+    shift
+    shift
+    ;;
    -h|--help)
     usage
     exit 0
@@ -216,6 +230,7 @@ hostPort=${hostPort:-32293}
 imageVersion=${imageVersion:-v2.6.2}
 imageNames=${imageNames:-chaos-mesh,chaos-daemon}
 imageRegister=${imageRegister:-ghcr.io/chaos-mesh}
+loadAllNodes=${loadAllNodes:-false}
 
 info
 
