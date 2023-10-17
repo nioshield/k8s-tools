@@ -144,10 +144,10 @@ install_chaos(){
   fi
   log_info `kubectl --kubeconfig ${k8sConf} create ns chaos-mesh`
   helm --kubeconfig ${k8sConf} install chaos-mesh ${chartDir} -n chaos-mesh ${setValue}
-  
   if [ "$ignoreDevPatch" == "false" ]; then
     kubectl --kubeconfig ${k8sConf} patch deployment chaos-controller-manager -p '{"spec":{"template":{"spec":{"containers":[{"name":"chaos-mesh","command":["/bin/sh", "-c", "--"],"args":["while true; do sleep 30; done;"]}]}}}}' -n chaos-mesh 
   fi
+  log_info `kubectl --kubeconfig ${k8sConf} get pods -n chaos-mesh`
   log_info "install chaos-mesh end"
 }
 
